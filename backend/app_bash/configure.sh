@@ -1,0 +1,49 @@
+#!/bin/bash
+
+DB_NAME="test_school"
+DB_USER="user"
+DB_PASS="password"
+DB_PORT="3306"
+FILE_CONF_PATH="/etc/mysql/mysql.conf.d/mysqld.cnf"
+BIND_ADDRESS="0.0.0.0"
+
+APP_PATH="/var/www/html/test_school"
+SQL_SCRIPT_PATH=$APP_PATH"/db_backup/test_school.sql"
+
+# RENEW APP DIR
+if [ -d $APP_PATH ]; then
+  sudo rm -rf $APP_PATH
+fi
+
+sudo mkdir -p $APP_PATH
+sudo chmod -R 777 $APP_PATH
+
+# update os
+sudo apt update -y
+sudo apt upgrade -y
+sudo apt install -y mysql-server
+
+# CONFIGURE REMOTE ACCESS
+sudo sed -i "s/^bind-address.*/bind_address=${BIND_ADDRESS}/" $FILE_CONF_PATH
+sudo systemctl restart mysql
+
+#sudo systemctl restart mysql.service
+sudo ufw allow from any to any port $DB_PORT
+
+# CREATE DB
+sudo mysql -e "CREATE DATABASE IF NOT EXISTS $DB_NAME;"
+sudo mysql -e "CREATE USER IF NOT EXISTS '$DB_USER'@'%' IDENTIFIED BY '$DB_PASS';"
+sudo mysql -e "GRANT ALL PRIVILEGES ON $DB_NAME.* TO '$DB_USER'@'%' WITH GRANT OPTION;"
+sudo mysql -e "FLUSH PRIVILEGES;"
+
+
+
+# IF DNS SERVER LOST
+# sudo nano /etc/resolv.conf
+# nameserver 8.8.8.8
+# nameserver 8.8.4.4
+# sudo systemctl restart systemd-resolved.service
+
+
+# AFTER DEPLOY APP RUN TO CREATE TABLES
+# mysql -u user --password=password -D test_school < /var/www/html/test_school/backend/db_backup/test_school.sql
