@@ -10,5 +10,3 @@ DIR = os.path.dirname(__file__)
 config_manager = ConfigManager(DIR)
 log_manager = LogManager(config_manager)
 
-
-log_manager.warning("EROORRRR!")
