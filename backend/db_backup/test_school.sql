@@ -5,18 +5,21 @@ use test_school;
 
 CREATE TABLE IF NOT EXISTS users (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    email VARCHAR(50),
-    password VARCHAR(50),
+    email VARCHAR(50),      #uniq
+    password VARCHAR(50),   #varchar(255)
     first_name VARCHAR(50),
     last_name VARCHAR(50)
 );
+
+# Для article завести отдельную таблицу
+# Может быть завести отдельную таблицу test_types (Типы тестов)
 
 CREATE TABLE IF NOT EXISTS tests (
     test_id INT PRIMARY KEY AUTO_INCREMENT,
     users_id INT NOT NULL,
     article VARCHAR(50),
     config VARCHAR(50),
-    state INT,
+    `state` INT,
     FOREIGN KEY (users_id) REFERENCES users (users_id) ON DELETE CASCADE
 );
 
@@ -36,4 +39,4 @@ CREATE TABLE IF NOT EXISTS tests_results (
     last_name VARCHAR(50),
     FOREIGN KEY (test_id) REFERENCES tests (test_id) ON DELETE CASCADE,
     FOREIGN KEY (transaction_id) REFERENCES transactions_test (transaction_id) ON DELETE CASCADE,
-)
+);
