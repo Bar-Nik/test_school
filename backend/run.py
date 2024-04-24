@@ -1,11 +1,12 @@
 # from werkzeug.security import generate_password_hash, check_password_hash
-# from flask import Flask, render_template, request
+from flask import Flask, render_template, request
 # from flask_sqlalchemy import SQLAlchemy
 
 import os
 from app.Managers.ConfigManager import ConfigManager
 from app.Managers.LogManager import LogManager
 from app.Managers.DbManager import DbManager
+from app.Managers.UserManager import UserManager
 
 
 DIR = os.path.abspath(os.path.dirname(__file__))
@@ -13,13 +14,16 @@ DIR = os.path.abspath(os.path.dirname(__file__))
 config_manager = ConfigManager(DIR)
 log_manager = LogManager(config_manager)
 db_manager = DbManager(config_manager, log_manager)
+user_manager = UserManager(config_manager, log_manager, db_manager)
 
 
 
+app = Flask(__name__)
 
-# app = Flask(__name__)
-
-
+@app.route('/')
+def index():
+    result = user_manager.create_user()
+    return result
 
 
 
@@ -48,9 +52,13 @@ db_manager = DbManager(config_manager, log_manager)
 #
 #
 #     return render_template('register.html', title='Регистрация')
-#
-# if __name__ == "__main__":
-#     app.run(debug=True)
+
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
+
+
 # if __name__ == "__main__":
 #     with app.app_context():
 #         db.create_all()
