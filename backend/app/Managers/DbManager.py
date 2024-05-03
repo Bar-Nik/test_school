@@ -1,7 +1,7 @@
 import sqlalchemy
 import traceback
 
-from sqlalchemy import Column, Integer, String, Boolean, Text, ForeignKey, inspect
+from sqlalchemy import Column, Integer, String, Boolean, Text, ForeignKey, inspect, engine
 from sqlalchemy.orm import Session, sessionmaker, mapper
 from sqlalchemy.exc import IntegrityError
 
@@ -9,12 +9,14 @@ from sqlalchemy.sql import text
 
 
 from sqlalchemy import create_engine
+from app.Models.Models import Base
 
 class DbManager:
     def __init__(self, config_manager=None, log_manager=None):
         self.config_manager = config_manager
         self.log_manager = log_manager
         self.session = None
+        self.engine = None
 
         self.connect()
 
@@ -29,18 +31,35 @@ class DbManager:
             password = self.config_manager.app_config.db_pass
             database = self.config_manager.app_config.db_name
 
-            engine = create_engine(
+            self.engine = create_engine(
                 f"mysql+pymysql://{user}:{password}@{host}:{port}/{database}",
                 isolation_level="READ COMMITTED"
             )
 
-            self.session = Session(bind=engine)
-            self.session.execute(text('SELECT * FROM test_school.test_table')).fetchall()
+            self.session = Session(bind=self.engine)
 
-            self.log_manager.info('Connect to DB successfully done.')
+            result = self.session.execute(text("SELECT VERSION()")).first()
+
+            if len(result):
+                self.log_manager.info(f'Test text execution: {result[0]}')
+                self.log_manager.info('Connect to DB successfully done.')
+            else:
+                raise Exception()
+
         except Exception as e:
             print(e)
             self.log_manager.error('Connect to DB failed.')
+
+    def create_tables(self):
+        try:
+            Base.metadata.create_all(bind=self.engine)
+            # with self.connect() as conn:
+            #     res = conn.execute(text("SELECT VERSION()"))
+            #     print(3)
+            #     print(f"{res=}")
+        except Exception as e:
+            print('Create table failed.')
+
 
 
 # # тут использовать ConfigManager (все креды хранить в .env, читать менеджером
