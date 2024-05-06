@@ -52,13 +52,15 @@ class DbManager:
 
     def create_tables(self):
         try:
+            Base.metadata.drop_all(bind=self.engine)
+            self.log_manager.info('Old table drop.')
             Base.metadata.create_all(bind=self.engine)
-            # with self.connect() as conn:
-            #     res = conn.execute(text("SELECT VERSION()"))
-            #     print(3)
-            #     print(f"{res=}")
+            self.log_manager.info('Create table successfully done.')
         except Exception as e:
             print('Create table failed.')
+
+    def insert_in_db(self):
+        pass
 
 
 
