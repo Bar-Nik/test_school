@@ -9,7 +9,7 @@ from sqlalchemy.sql import text
 
 
 from sqlalchemy import create_engine
-from app.Models.Models import Base
+from ..Models.Models import Base
 
 class DbManager:
     def __init__(self, config_manager=None, log_manager=None):
@@ -41,7 +41,7 @@ class DbManager:
             result = self.session.execute(text("SELECT VERSION()")).first()
 
             if len(result):
-                self.log_manager.info(f'Test text execution: {result[0]}')
+                self.log_manager.info(f'Test text execution. version DB: {result[0]}')
                 self.log_manager.info('Connect to DB successfully done.')
             else:
                 raise Exception()
@@ -58,7 +58,9 @@ class DbManager:
             #     print(3)
             #     print(f"{res=}")
         except Exception as e:
-            print('Create table failed.')
+            self.log_manager.error(f'DB error, when creating tables: {e}')
+
+        self.log_manager.info('Create tables successfully done.')
 
 
 
