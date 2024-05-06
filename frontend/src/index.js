@@ -1,1 +1,4 @@
-console.log("work 2");
+import App from "./App"
+
+let app = new App();
+app.Init();
