@@ -4,5 +4,15 @@ class UserManager:
         self.log = log_manager
         self.db = db_manager
 
-    def create_user(self, user):
-        return None
+    def create_user(self, user: dict):
+        pass
+
+    def update_user(self, user: dict):
+        pass
+
+    def delete_user(self, user: dict):
+        pass
+
+    def get_user_by_id(self):
+        # return dict
+        pass

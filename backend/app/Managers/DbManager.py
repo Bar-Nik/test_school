@@ -50,16 +50,20 @@ class DbManager:
             print(e)
             self.log_manager.error('Connect to DB failed.')
 
-    def create_tables(self):
+    def drop_all_tables(self):
         try:
             Base.metadata.drop_all(bind=self.engine)
-            self.log_manager.info('Old table drop.')
+            self.log_manager.info('All tables dropped successfully done.')
+        except Exception as e:
+            self.log_manager.error(f'DB error, when drop all tables: {e}')
+
+
+    def create_tables(self):
+        try:
             Base.metadata.create_all(bind=self.engine)
-            self.log_manager.info('Create table successfully done.')
+            self.log_manager.info('Create tables successfully done.')
         except Exception as e:
             self.log_manager.error(f'DB error, when creating tables: {e}')
-
-        self.log_manager.info('Create tables successfully done.')
 
     def insert_in_db(self):
         pass

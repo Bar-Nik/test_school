@@ -2,6 +2,7 @@ from typing import Annotated, Optional
 from sqlalchemy import Table, Column, Integer, String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, DeclarativeBase
 
+
 intpk = Annotated[int, mapped_column(primary_key=True)]
 str_50 = Annotated[str, '50']
 str_100 = Annotated[str, '100']
@@ -40,7 +41,7 @@ class Transactions(Base):
     test_id: Mapped[int] = mapped_column(ForeignKey('tests._id', ondelete='CASCADE'))
 
 
-class Tests_results(Base):
+class TestsResults(Base):
     __tablename__ = 'test_results'
 
     _id: Mapped[intpk]
