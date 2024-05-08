@@ -9,7 +9,7 @@ export default function App()
 
 App.prototype.Init = function()
 {
-    console.log("App init");
-    this.ApiManager.GetTestResponse();
-
+    this.ApiManager.GetTestResponse().then(r => {
+        console.log(r);
+    });
 }
