@@ -9,7 +9,7 @@ from sqlalchemy.sql import text
 
 
 from sqlalchemy import create_engine
-from ..Models.Models import Base
+from ..Models.Models import Base, Users
 
 class DbManager:
     def __init__(self, config_manager=None, log_manager=None):
@@ -65,8 +65,15 @@ class DbManager:
         except Exception as e:
             self.log_manager.error(f'DB error, when creating tables: {e}')
 
-    def insert_in_db(self):
-        pass
+    def insert_in_db(self, user):
+        try:
+            with self.session as session:
+                us = Users(email=user.email, password=user.password, first_name=user.first_name, last_name=user.last_name)
+                session.add(us)
+                session.commit()
+                self.log_manager.info(f'Create user {user.last_name}')
+        except Exception as e:
+            self.log_manager.error(f'Not create user! Error {e}')
 
 
 

@@ -5,7 +5,10 @@ class UserManager:
         self.db = db_manager
 
     def create_user(self, user: dict):
-        pass
+        self.email = user['email']
+        self.password = user['password']
+        self.first_name = user['first_name']
+        self.last_name = user['last_name']
 
     def update_user(self, user: dict):
         pass
